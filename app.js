@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const expressValidator = require('express-validator');
 
 const apiRouter = require('./components/api/api_router');
 const userRouter = require('./components/user/user-router');
@@ -15,7 +16,7 @@ var app = express();
 app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(expressValidator());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
