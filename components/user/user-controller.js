@@ -2,6 +2,7 @@ const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const User = require('../../server/db/models').User;
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 module.exports.login = [
 	body('username')
@@ -42,15 +43,18 @@ module.exports.login = [
 
 				if (!isValidLogin) {
 					// error
-					console.log('NOT RIGHT');
 					res.json({
 						errors: [ 'Password is incorrect' ]
 					});
 				} else {
 					// redirect to home and do session thing here or jsonwebtoken
-					console.log('PASSWORD MATCHES');
+					console.log('USER OBJECT');
+					console.log(user.dataValues);
+					const token = generateJSONWebToken(user.dataValues);
+
 					res.json({
-						redirect: '/'
+						redirect: '/',
+						token
 					});
 				}
 			}
@@ -112,4 +116,10 @@ function hashPassword(password) {
 	const hash = bcrypt.hashSync(password, salt);
 
 	return hash;
+}
+
+function generateJSONWebToken(data) {
+	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: '15m' });
+	console.log('token is', token);
+	return token;
 }
