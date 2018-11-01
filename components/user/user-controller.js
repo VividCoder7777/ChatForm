@@ -38,15 +38,17 @@ module.exports.login = [
 			}
 		}).then((user) => {
 			if (user) {
-				const hashedPassword = hashPassword(req.body.password);
+				const isValidLogin = bcrypt.compareSync(req.body.password, user.password);
 
-				if (hashedPassword !== user.password) {
+				if (!isValidLogin) {
 					// error
+					console.log('NOT RIGHT');
 					res.json({
 						errors: [ 'Password is incorrect' ]
 					});
 				} else {
 					// redirect to home and do session thing here or jsonwebtoken
+					console.log('PASSWORD MATCHES');
 					res.json({
 						redirect: '/'
 					});
