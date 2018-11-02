@@ -36,7 +36,8 @@ module.exports.login = [
 		User.findOne({
 			where: {
 				username: req.body.username
-			}
+			},
+			attributes: [ 'id', 'username', 'password' ]
 		}).then((user) => {
 			if (user) {
 				const isValidLogin = bcrypt.compareSync(req.body.password, user.password);
@@ -110,6 +111,12 @@ module.exports.register = [
 		}
 	}
 ];
+
+module.exports.isAuthenticated = (req, res, next) => {
+	let jwt = req.header('Authentication');
+	console.log(jwt);
+	res.send('hi');
+};
 
 function hashPassword(password) {
 	const salt = bcrypt.genSaltSync(10);
