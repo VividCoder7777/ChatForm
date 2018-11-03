@@ -38,9 +38,9 @@ module.exports.login = [
 				username: req.body.username
 			},
 			attributes: [ 'id', 'username', 'password' ]
-		}).then((user) => {
-			if (user) {
-				const isValidLogin = bcrypt.compareSync(req.body.password, user.password);
+		}).then((userDB) => {
+			if (userDB) {
+				const isValidLogin = bcrypt.compareSync(req.body.password, userDB.password);
 
 				if (!isValidLogin) {
 					// error
@@ -49,9 +49,12 @@ module.exports.login = [
 					});
 				} else {
 					// redirect to home and do session thing here or jsonwebtoken
-					console.log('USER OBJECT');
-					console.log(user.dataValues);
-					const token = generateJSONWebToken(user.dataValues);
+
+					let user = {
+						id: userDB.dataValues.id,
+						username: userDB.dataValues.username
+					};
+					const token = generateJSONWebToken(user);
 
 					res.json({
 						redirect: '/',
@@ -113,9 +116,22 @@ module.exports.register = [
 ];
 
 module.exports.isAuthenticated = (req, res, next) => {
-	let jwt = req.header('Authentication');
-	console.log(jwt);
-	res.send('hi');
+	let jwtHeader = req.header('authorization');
+	let token = jwtHeader.split(' ')[1];
+
+	jwt.verify(token, process.env.jwtsecret, (err, decoded) => {
+		if (decoded === undefined) {
+			res.json({
+				user: undefined
+			});
+		} else {
+			res.json({
+				user: {
+					username: decoded.username
+				}
+			});
+		}
+	});
 };
 
 function hashPassword(password) {
@@ -126,7 +142,7 @@ function hashPassword(password) {
 }
 
 function generateJSONWebToken(data) {
-	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: '15m' });
+	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: '10s' });
 	console.log('token is', token);
 	return token;
 }
