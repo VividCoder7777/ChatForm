@@ -51,14 +51,14 @@ module.exports.login = [
 					// redirect to home and do session thing here or jsonwebtoken
 
 					let user = {
-						id: userDB.dataValues.id,
 						username: userDB.dataValues.username
 					};
 					const token = generateJSONWebToken(user);
 
 					res.json({
 						redirect: '/',
-						token
+						token,
+						user
 					});
 				}
 			}
@@ -142,7 +142,9 @@ function hashPassword(password) {
 }
 
 function generateJSONWebToken(data) {
-	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: '10s' });
+	const expiresIn = '10m';
+
+	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: expiresIn });
 	console.log('token is', token);
 	return token;
 }
