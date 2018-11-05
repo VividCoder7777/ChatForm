@@ -142,7 +142,7 @@ function hashPassword(password) {
 }
 
 function generateJSONWebToken(data) {
-	const expiresIn = '10m';
+	const expiresIn = '2m';
 
 	const token = jwt.sign(data, process.env.jwtsecret, { expiresIn: expiresIn });
 	console.log('token is', token);
