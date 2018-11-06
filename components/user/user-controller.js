@@ -4,6 +4,7 @@ const User = require('../../server/db/models').User;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+//
 module.exports.login = [
 	body('username')
 		.isEmail()
