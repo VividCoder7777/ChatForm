@@ -5,7 +5,8 @@
 	"scripts": {
 		"start": "node ./bin/www",
 		"heroku-postbuild": "npm install && cd client && npm install --only-dev && npm install && npm run build",
-		"dev": "nodemon ./bin/www"
+		"dev": "nodemon ./bin/www",
+		"git": "cd client && git add . && git commit -m 'dsadsa' && git push origin master && cd .. && git add . && git commit -m 'dsadsa' && git push origin master"
 	},
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
